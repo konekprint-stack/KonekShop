@@ -4,45 +4,55 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>KonekShop • Catálogo Digital</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Fredoka:wght@500;600;700&family=Montserrat:wght@400;600;700;800&family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
       --primary: #0ea5e9;
       --primary-dark: #0284c7;
+      --primary-soft: #e0f2fe;
       --bg: #f8fafc;
       --card: #ffffff;
       --text: #0f172a;
       --muted: #64748b;
       --border: #e2e8f0;
+      --store-font: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      --size-name: 15px;
+      --size-cat: 11px;
+      --size-desc: 12px;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--store-font); }
 
     body {
       background-color: var(--bg);
       color: var(--text);
       padding-bottom: 70px;
+      transition: background-color 0.25s ease;
     }
 
     header {
       background: linear-gradient(135deg, var(--primary), var(--primary-dark));
       color: #ffffff;
-      padding: 22px 16px 26px 16px;
+      padding: 24px 16px 28px 16px;
       text-align: center;
       position: relative;
-      border-bottom-left-radius: 24px;
-      border-bottom-right-radius: 24px;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+      border-bottom-left-radius: 26px;
+      border-bottom-right-radius: 26px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.14);
+      transition: background 0.25s ease;
     }
 
     .admin-toggle-btn {
       position: absolute;
       top: 14px;
       right: 14px;
-      background: rgba(255, 255, 255, 0.2);
-      border: 1px solid rgba(255, 255, 255, 0.35);
+      background: rgba(255, 255, 255, 0.22);
+      border: 1px solid rgba(255, 255, 255, 0.4);
       color: #fff;
-      width: 36px;
-      height: 36px;
+      width: 38px;
+      height: 38px;
       border-radius: 50%;
       font-size: 0.95rem;
       cursor: pointer;
@@ -56,20 +66,21 @@
     }
 
     .store-logo {
-      width: 72px;
-      height: 72px;
+      width: 82px;
+      height: 82px;
       border-radius: 50%;
       object-fit: cover;
       border: 3px solid #ffffff;
       margin: 0 auto 10px auto;
       display: none;
-      background: #fff;
+      background: #ffffff;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.2);
     }
 
     .store-badge {
       display: inline-block;
-      background: rgba(255, 255, 255, 0.2);
-      padding: 3px 10px;
+      background: rgba(255, 255, 255, 0.22);
+      padding: 3px 11px;
       border-radius: 20px;
       font-size: 0.72rem;
       font-weight: 700;
@@ -78,30 +89,56 @@
       margin-bottom: 6px;
     }
 
-    header h1 { font-size: 1.55rem; font-weight: 800; margin-bottom: 4px; }
-    header p { font-size: 0.85rem; opacity: 0.9; }
+    header h1 { font-size: 1.6rem; font-weight: 800; margin-bottom: 4px; }
+    header p { font-size: 0.85rem; opacity: 0.92; }
 
     .container { max-width: 960px; margin: 0 auto; padding: 16px; }
 
+    /* PANEL DE ADMINISTRADOR CON PESTAÑAS */
     #adminPanel {
       display: none;
       background: #0f172a;
       color: #f8fafc;
-      border-radius: 18px;
-      padding: 20px 16px;
+      border-radius: 20px;
+      padding: 18px 16px;
       margin-bottom: 22px;
       border: 2px solid var(--primary);
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.28);
+      font-family: -apple-system, sans-serif !important;
     }
+    #adminPanel * { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
 
     .admin-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
       padding-bottom: 10px;
       border-bottom: 1px solid #1e293b;
     }
-    .admin-header h2 { font-size: 1.05rem; color: #38bdf8; }
+    .admin-header h2 { font-size: 1rem; color: #38bdf8; }
+
+    .admin-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .admin-tab-btn {
+      flex: 1;
+      background: #1e293b;
+      color: #94a3b8;
+      border: 1px solid #334155;
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .admin-tab-btn.active {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
 
     .btn-logout {
       background: #ef4444;
@@ -122,14 +159,14 @@
 
     .admin-label { display: block; font-size: 0.78rem; color: #94a3b8; margin-bottom: 4px; font-weight: 600; }
 
-    .admin-input, .admin-textarea {
+    .admin-input, .admin-textarea, .admin-select {
       width: 100%;
       background: #1e293b;
       border: 1px solid #334155;
       color: #ffffff;
-      padding: 11px 12px;
+      padding: 10px 12px;
       border-radius: 10px;
-      font-size: 0.92rem;
+      font-size: 0.9rem;
     }
 
     .photo-upload-box {
@@ -143,6 +180,36 @@
     }
 
     #previewImg { max-height: 150px; border-radius: 10px; margin: 10px auto 0 auto; display: none; }
+    #previewLogo { width: 76px; height: 76px; border-radius: 50%; object-fit: cover; margin: 10px auto 0 auto; display: none; border: 2px solid #fff; }
+
+    .palette-swatches {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-top: 4px;
+    }
+    .swatch-dot {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid #ffffff;
+      cursor: pointer;
+      transition: transform 0.15s;
+    }
+    .swatch-dot:hover { transform: scale(1.15); }
+
+    .range-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #1e293b;
+      padding: 8px 12px;
+      border-radius: 10px;
+      border: 1px solid #334155;
+    }
+    .range-row input[type="range"] { flex: 1; }
+    .range-val { font-size: 0.8rem; font-weight: 700; color: #38bdf8; min-width: 38px; text-align: right; }
 
     .btn-save-prod {
       background: #10b981;
@@ -151,13 +218,14 @@
       width: 100%;
       padding: 13px;
       border-radius: 12px;
-      font-size: 0.98rem;
+      font-size: 0.96rem;
       font-weight: 800;
       cursor: pointer;
       margin-top: 6px;
     }
     .btn-save-prod:disabled { opacity: 0.6; cursor: not-allowed; }
 
+    /* BUSCADOR Y CATEGORÍAS */
     .search-box { margin-bottom: 12px; }
     .search-input {
       width: 100%;
@@ -167,6 +235,7 @@
       background: var(--card);
       font-size: 0.92rem;
     }
+    .search-input:focus { outline: 2px solid var(--primary); border-color: transparent; }
 
     .categories-bar {
       display: flex;
@@ -182,10 +251,11 @@
       border: 1px solid var(--border);
       padding: 8px 16px;
       border-radius: 50px;
-      font-size: 0.84rem;
+      font-size: var(--size-cat);
       font-weight: 700;
       white-space: nowrap;
       cursor: pointer;
+      transition: all 0.2s;
     }
     .cat-pill.active {
       background: var(--primary);
@@ -193,6 +263,7 @@
       border-color: var(--primary);
     }
 
+    /* CUADRÍCULA DE PRODUCTOS CON TAMAÑOS DINÁMICOS */
     .products-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -209,13 +280,14 @@
       display: flex;
       flex-direction: column;
       position: relative;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.04);
     }
 
     .prod-img-wrap {
       position: relative;
       width: 100%;
       padding-bottom: 100%;
-      background: #f1f5f9;
+      background: var(--primary-soft);
       cursor: pointer;
     }
 
@@ -230,12 +302,13 @@
       position: absolute;
       top: 8px;
       left: 8px;
-      background: rgba(15, 23, 42, 0.78);
+      background: var(--primary-dark);
       color: #fff;
-      font-size: 0.68rem;
+      font-size: var(--size-cat);
       font-weight: 700;
-      padding: 3px 8px;
+      padding: 3px 9px;
       border-radius: 6px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     }
 
     .btn-del-prod {
@@ -263,9 +336,25 @@
       justify-content: space-between;
     }
 
-    .prod-title { font-size: 0.94rem; font-weight: 700; margin-bottom: 4px; }
-    .prod-desc { font-size: 0.78rem; color: var(--muted); margin-bottom: 10px; }
-    .prod-price { font-size: 1.12rem; font-weight: 800; color: var(--primary-dark); margin-bottom: 10px; }
+    .prod-title {
+      font-size: var(--size-name);
+      font-weight: 700;
+      margin-bottom: 4px;
+      line-height: 1.25;
+      color: var(--text);
+    }
+    .prod-desc {
+      font-size: var(--size-desc);
+      color: var(--muted);
+      margin-bottom: 10px;
+      line-height: 1.35;
+    }
+    .prod-price {
+      font-size: calc(var(--size-name) + 3px);
+      font-weight: 800;
+      color: var(--primary-dark);
+      margin-bottom: 10px;
+    }
 
     .btn-order-wa {
       display: flex;
@@ -334,12 +423,19 @@
 
   <div class="container">
 
+    <!-- PANEL DE ADMINISTRADOR CON 2 PESTAÑAS -->
     <section id="adminPanel">
       <div class="admin-header">
-        <h2>⚡ Panel de Dueño • Agregar Producto</h2>
+        <h2>⚡ Panel de Administración</h2>
         <button type="button" id="btnLogout" class="btn-logout">Salir</button>
       </div>
 
+      <div class="admin-tabs">
+        <button type="button" class="admin-tab-btn active" id="tabBtnProducts" onclick="switchAdminTab('products')">➕ Productos</button>
+        <button type="button" class="admin-tab-btn" id="tabBtnDesign" onclick="switchAdminTab('design')">🎨 Diseño y Logo</button>
+      </div>
+
+      <!-- PESTAÑA 1: AGREGAR PRODUCTOS -->
       <form id="formAddProduct" class="form-grid">
         <div class="full-col">
           <label for="prodPhoto" class="photo-upload-box">
@@ -376,6 +472,77 @@
           <p id="adminStatus" style="text-align:center; font-size:0.82rem; margin-top:8px; color:#38bdf8;"></p>
         </div>
       </form>
+
+      <!-- PESTAÑA 2: PERSONALIZAR LOGO, PALETA DE COLOR, FUENTE Y TAMAÑOS -->
+      <form id="formDesignStore" class="form-grid" style="display:none;">
+        <div class="full-col">
+          <label for="logoFileInput" class="photo-upload-box" style="border-color:#10b981; background:rgba(16,185,129,0.08);">
+            🏷️ <strong>Subir o Cambiar Logo del Negocio</strong><br>
+            <span style="font-size:0.75rem; color:#94a3b8;">Formato cuadrado o circular recomendado</span>
+            <img id="previewLogo" src="" alt="Vista previa logo">
+          </label>
+          <input type="file" id="logoFileInput" accept="image/*" style="display:none;">
+        </div>
+
+        <div class="full-col">
+          <label class="admin-label">Nombre visible del negocio</label>
+          <input type="text" id="designStoreName" class="admin-input" placeholder="Nombre de tu tienda">
+        </div>
+
+        <div class="full-col">
+          <label class="admin-label">Color Principal (Genera toda la paleta automáticamente)</label>
+          <div class="palette-swatches">
+            <span class="swatch-dot" style="background:#0ea5e9;" data-color="#0ea5e9" title="Azul Cielo"></span>
+            <span class="swatch-dot" style="background:#10b981;" data-color="#10b981" title="Verde Esmeralda"></span>
+            <span class="swatch-dot" style="background:#ec4899;" data-color="#ec4899" title="Rosa Boutique"></span>
+            <span class="swatch-dot" style="background:#f59e0b;" data-color="#f59e0b" title="Ámbar / Dorado"></span>
+            <span class="swatch-dot" style="background:#8b5cf6;" data-color="#8b5cf6" title="Morado"></span>
+            <span class="swatch-dot" style="background:#ef4444;" data-color="#ef4444" title="Rojo Comercial"></span>
+            <span class="swatch-dot" style="background:#1e293b;" data-color="#1e293b" title="Negro Elegante"></span>
+            <input type="color" id="designPrimaryColor" value="#0ea5e9" style="width:38px; height:32px; border:none; border-radius:8px; cursor:pointer; background:transparent;">
+          </div>
+        </div>
+
+        <div class="full-col">
+          <label class="admin-label">Tipografía (Fuente de toda la tienda)</label>
+          <select id="designFontSelect" class="admin-select">
+            <option value="'Plus Jakarta Sans', sans-serif">Plus Jakarta Sans (Moderna y limpia)</option>
+            <option value="'Montserrat', sans-serif">Montserrat (Comercial / Geométrica)</option>
+            <option value="'Playfair Display', serif">Playfair Display (Elegante / Boutique)</option>
+            <option value="'Fredoka', sans-serif">Fredoka (Divertida / Infantil / Postres)</option>
+            <option value="'Cinzel', serif">Cinzel (Clásica / Joyería)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="admin-label">Tamaño Nombre del Artículo</label>
+          <div class="range-row">
+            <input type="range" id="rangeSizeName" min="12" max="22" value="15">
+            <span class="range-val" id="valSizeName">15px</span>
+          </div>
+        </div>
+
+        <div>
+          <label class="admin-label">Tamaño Etiqueta Categoría</label>
+          <div class="range-row">
+            <input type="range" id="rangeSizeCat" min="9" max="16" value="11">
+            <span class="range-val" id="valSizeCat">11px</span>
+          </div>
+        </div>
+
+        <div class="full-col">
+          <label class="admin-label">Tamaño Descripción del Producto</label>
+          <div class="range-row">
+            <input type="range" id="rangeSizeDesc" min="10" max="17" value="12">
+            <span class="range-val" id="valSizeDesc">12px</span>
+          </div>
+        </div>
+
+        <div class="full-col">
+          <button type="submit" id="btnSaveDesign" class="btn-save-prod" style="background:#0ea5e9;">💾 Guardar Diseño en la Tienda</button>
+          <p id="designStatus" style="text-align:center; font-size:0.82rem; margin-top:8px; color:#38bdf8;"></p>
+        </div>
+      </form>
     </section>
 
     <div class="search-box">
@@ -397,7 +564,7 @@
       <button type="button" class="modal-close-x" onclick="cerrarModales()">✕</button>
       <div style="font-size:2rem; margin-bottom:6px;">🔐</div>
       <h3 style="margin-bottom:4px;">Modo Administrador</h3>
-      <p style="font-size:0.82rem; color:var(--muted); margin-bottom:14px;">Ingresa la clave del negocio para subir o borrar productos.</p>
+      <p style="font-size:0.82rem; color:var(--muted); margin-bottom:14px;">Ingresa la clave del negocio para gestionar productos o diseño.</p>
       <input type="password" id="adminPassInput" class="search-input" placeholder="Contraseña..." style="text-align:center; margin-bottom:12px;">
       <button type="button" id="btnVerifyPass" class="btn-save-prod" style="background:var(--primary);">Entrar al Panel</button>
       <p id="loginError" style="color:#ef4444; font-size:0.8rem; margin-top:8px;"></p>
@@ -408,10 +575,10 @@
     <div class="modal-card" style="text-align:left;">
       <button type="button" class="modal-close-x" onclick="cerrarModales()">✕</button>
       <img id="detailImg" src="" alt="Producto">
-      <span id="detailCat" style="font-size:0.72rem; font-weight:700; color:var(--primary); text-transform:uppercase;"></span>
-      <h3 id="detailTitle" style="font-size:1.25rem; margin:2px 0 6px 0;"></h3>
+      <span id="detailCat" style="font-size:var(--size-cat); font-weight:700; color:var(--primary); text-transform:uppercase;"></span>
+      <h3 id="detailTitle" style="font-size:calc(var(--size-name) + 4px); margin:2px 0 6px 0;"></h3>
       <div id="detailPrice" style="font-size:1.3rem; font-weight:800; color:var(--primary-dark); margin-bottom:8px;"></div>
-      <p id="detailDesc" style="font-size:0.88rem; color:var(--muted); margin-bottom:16px; line-height:1.45;"></p>
+      <p id="detailDesc" style="font-size:calc(var(--size-desc) + 2px); color:var(--muted); margin-bottom:16px; line-height:1.45;"></p>
       <a id="detailWaBtn" href="#" target="_blank" class="btn-order-wa" style="padding:12px; font-size:0.95rem;">📲 Pedir por WhatsApp</a>
     </div>
   </div>
@@ -421,7 +588,7 @@
   </footer>
 
   <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbw7dEGWnA3iMLThZ8KamPwfnJc__Mtab1NZWq3hlo5VtTdaCfSZr6yuYKEk4T7I4PI6vw/exec";
+    const API_URL = "https://script.google.com/macros/s/AKfycbwe1jOX0jkutPUU4AUR5VleD-aJ_ZHdFYgDzcP8kzNQHlgj5WMmvLE4vpbI3OcUEmLSSQ/exec";
 
     const urlParams = new URLSearchParams(window.location.search);
     const TIENDA_ID = (urlParams.get("tienda") || "demo-konek").trim().toLowerCase();
@@ -433,6 +600,49 @@
     let isAdmin = false;
     let adminPassword = "";
     let compressedBase64 = "";
+    let compressedLogoBase64 = "";
+
+    // Generador automático de paleta armónica a partir de un solo color
+    function applyHarmoniousPalette(hexColor) {
+      const hex = (hexColor || "#0ea5e9").replace("#", "");
+      if (hex.length !== 6) return;
+      const r = parseInt(hex.substring(0, 2), 16);
+      const g = parseInt(hex.substring(2, 4), 16);
+      const b = parseInt(hex.substring(4, 6), 16);
+
+      // Tono oscuro armónico (-28% brillo)
+      const dr = Math.max(0, Math.round(r * 0.72));
+      const dg = Math.max(0, Math.round(g * 0.72));
+      const db = Math.max(0, Math.round(b * 0.72));
+      const darkHex = "#" + [dr, dg, db].map(x => x.toString(16).padStart(2, "0")).join("");
+
+      // Tono suave para tarjetas y placeholders
+      const softRgba = `rgba(${r}, ${g}, ${b}, 0.12)`;
+      // Fondo general ultra sutil acorde al color elegido
+      const bgTint = `rgb(${Math.round(255 - (255 - r) * 0.05)}, ${Math.round(255 - (255 - g) * 0.05)}, ${Math.round(255 - (255 - b) * 0.05)})`;
+
+      const root = document.documentElement.style;
+      root.setProperty("--primary", "#" + hex);
+      root.setProperty("--primary-dark", darkHex);
+      root.setProperty("--primary-soft", softRgba);
+      root.setProperty("--bg", bgTint);
+    }
+
+    function applyTypographySettings(fontFamily, szName, szCat, szDesc) {
+      const root = document.documentElement.style;
+      if (fontFamily) root.setProperty("--store-font", fontFamily);
+      if (szName) root.setProperty("--size-name", szName + "px");
+      if (szCat) root.setProperty("--size-cat", szCat + "px");
+      if (szDesc) root.setProperty("--size-desc", szDesc + "px");
+    }
+
+    function switchAdminTab(tab) {
+      const isProd = tab === "products";
+      document.getElementById("formAddProduct").style.display = isProd ? "grid" : "none";
+      document.getElementById("formDesignStore").style.display = isProd ? "none" : "grid";
+      document.getElementById("tabBtnProducts").classList.toggle("active", isProd);
+      document.getElementById("tabBtnDesign").classList.toggle("active", !isProd);
+    }
 
     function universalGetRequest(params) {
       return new Promise((resolve, reject) => {
@@ -505,13 +715,28 @@
 
         document.title = storeData.nombre + " • KonekShop";
         document.getElementById("storeName").innerText = storeData.nombre;
-        document.documentElement.style.setProperty("--primary", storeData.color);
-        document.documentElement.style.setProperty("--primary-dark", storeData.color);
 
+        // Aplicar paleta, tipografía y tamaños guardados
+        applyHarmoniousPalette(storeData.color);
+        applyTypographySettings(storeData.fuente, storeData.tamNombre, storeData.tamCategoria, storeData.tamDescripcion);
+
+        // Sincronizar controles del panel de diseño
+        document.getElementById("designStoreName").value = storeData.nombre;
+        document.getElementById("designPrimaryColor").value = storeData.color;
+        document.getElementById("designFontSelect").value = storeData.fuente;
+        document.getElementById("rangeSizeName").value = storeData.tamNombre;
+        document.getElementById("valSizeName").innerText = storeData.tamNombre + "px";
+        document.getElementById("rangeSizeCat").value = storeData.tamCategoria;
+        document.getElementById("valSizeCat").innerText = storeData.tamCategoria + "px";
+        document.getElementById("rangeSizeDesc").value = storeData.tamDescripcion;
+        document.getElementById("valSizeDesc").innerText = storeData.tamDescripcion + "px";
+
+        const logoEl = document.getElementById("storeLogo");
         if (storeData.logo) {
-          const logoEl = document.getElementById("storeLogo");
           logoEl.src = storeData.logo;
           logoEl.style.display = "block";
+        } else {
+          logoEl.style.display = "none";
         }
 
         buildCategories();
@@ -678,10 +903,10 @@
       renderProducts();
     });
 
+    // Compresión de foto de producto
     document.getElementById("prodPhoto").addEventListener("change", function(e) {
       const file = e.target.files[0];
       if (!file) return;
-
       const reader = new FileReader();
       reader.onload = function(ev) {
         const img = new Image();
@@ -691,12 +916,9 @@
           let w = img.width, h = img.height;
           if (w > h && w > maxDim) { h = Math.round((h * maxDim) / w); w = maxDim; }
           else if (h > maxDim) { w = Math.round((w * maxDim) / h); h = maxDim; }
-
-          canvas.width = w;
-          canvas.height = h;
+          canvas.width = w; canvas.height = h;
           canvas.getContext("2d").drawImage(img, 0, 0, w, h);
           compressedBase64 = canvas.toDataURL("image/jpeg", 0.80);
-
           const prev = document.getElementById("previewImg");
           prev.src = compressedBase64;
           prev.style.display = "block";
@@ -706,6 +928,113 @@
       reader.readAsDataURL(file);
     });
 
+    // Compresión y vista previa en vivo del Logo del negocio
+    document.getElementById("logoFileInput").addEventListener("change", function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(ev) {
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement("canvas");
+          const maxDim = 360;
+          let w = img.width, h = img.height;
+          if (w > h && w > maxDim) { h = Math.round((h * maxDim) / w); w = maxDim; }
+          else if (h > maxDim) { w = Math.round((w * maxDim) / h); h = maxDim; }
+          canvas.width = w; canvas.height = h;
+          canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+          compressedLogoBase64 = canvas.toDataURL("image/png");
+
+          const prevLogo = document.getElementById("previewLogo");
+          prevLogo.src = compressedLogoBase64;
+          prevLogo.style.display = "block";
+
+          // Actualizar encabezado en vivo
+          const headerLogo = document.getElementById("storeLogo");
+          headerLogo.src = compressedLogoBase64;
+          headerLogo.style.display = "block";
+        };
+        img.src = ev.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // Vista previa en vivo de colores, nombre, fuente y tamaños
+    document.querySelectorAll(".swatch-dot").forEach(dot => {
+      dot.addEventListener("click", () => {
+        const c = dot.getAttribute("data-color");
+        document.getElementById("designPrimaryColor").value = c;
+        applyHarmoniousPalette(c);
+      });
+    });
+
+    document.getElementById("designPrimaryColor").addEventListener("input", e => {
+      applyHarmoniousPalette(e.target.value);
+    });
+
+    document.getElementById("designStoreName").addEventListener("input", e => {
+      if (e.target.value.trim()) document.getElementById("storeName").innerText = e.target.value.trim();
+    });
+
+    document.getElementById("designFontSelect").addEventListener("change", e => {
+      applyTypographySettings(e.target.value, null, null, null);
+    });
+
+    document.getElementById("rangeSizeName").addEventListener("input", e => {
+      document.getElementById("valSizeName").innerText = e.target.value + "px";
+      applyTypographySettings(null, e.target.value, null, null);
+    });
+
+    document.getElementById("rangeSizeCat").addEventListener("input", e => {
+      document.getElementById("valSizeCat").innerText = e.target.value + "px";
+      applyTypographySettings(null, null, e.target.value, null);
+    });
+
+    document.getElementById("rangeSizeDesc").addEventListener("input", e => {
+      document.getElementById("valSizeDesc").innerText = e.target.value + "px";
+      applyTypographySettings(null, null, null, e.target.value);
+    });
+
+    // Guardar diseño personalizado en Google Sheets y Drive
+    document.getElementById("formDesignStore").addEventListener("submit", async function(e) {
+      e.preventDefault();
+      const btn = document.getElementById("btnSaveDesign");
+      const status = document.getElementById("designStatus");
+
+      const payload = {
+        action: "updateBranding",
+        tienda: TIENDA_ID,
+        pass: adminPassword,
+        nombreNegocio: document.getElementById("designStoreName").value.trim(),
+        color: document.getElementById("designPrimaryColor").value,
+        fuente: document.getElementById("designFontSelect").value,
+        tamNombre: document.getElementById("rangeSizeName").value,
+        tamCategoria: document.getElementById("rangeSizeCat").value,
+        tamDescripcion: document.getElementById("rangeSizeDesc").value,
+        logoBase64: compressedLogoBase64
+      };
+
+      btn.disabled = true;
+      status.style.color = "#38bdf8";
+      status.innerText = "⏳ Guardando identidad y diseño de la tienda...";
+
+      try {
+        await universalPostRequest(payload);
+        await new Promise(r => setTimeout(r, 2500));
+        status.style.color = "#4ade80";
+        status.innerText = "✅ ¡Diseño y logo guardados!";
+        compressedLogoBase64 = "";
+        await loadCatalog();
+        setTimeout(() => { status.innerText = ""; }, 3000);
+      } catch (err) {
+        status.style.color = "#ef4444";
+        status.innerText = "❌ Error al guardar diseño: " + err.message;
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
+    // Publicar producto nuevo
     document.getElementById("formAddProduct").addEventListener("submit", async function(e) {
       e.preventDefault();
       const btn = document.getElementById("btnSubmitProd");
@@ -746,7 +1075,6 @@
 
     async function deleteProduct(productId, productName) {
       if (!confirm(`¿Seguro que deseas eliminar "${productName}" del catálogo?`)) return;
-
       try {
         await universalPostRequest({
           action: "deleteProduct",
