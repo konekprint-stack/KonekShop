@@ -1,558 +1,9 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>KonekShop • Catálogo Digital</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --primary: #0ea5e9;
-      --primary-dark: #0284c7;
-      --bg: #f8fafc;
-      --card: #ffffff;
-      --text: #0f172a;
-      --muted: #64748b;
-      --border: #e2e8f0;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; }
-
-    body {
-      background-color: var(--bg);
-      color: var(--text);
-      padding-bottom: 70px;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    /* HEADER / ENCABEZADO DE TIENDA */
-    header {
-      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-      color: #ffffff;
-      padding: 22px 16px 26px 16px;
-      text-align: center;
-      position: relative;
-      border-bottom-left-radius: 24px;
-      border-bottom-right-radius: 24px;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
-    }
-
-    .admin-toggle-btn {
-      position: absolute;
-      top: 14px;
-      right: 14px;
-      background: rgba(255, 255, 255, 0.2);
-      border: 1px solid rgba(255, 255, 255, 0.35);
-      color: #fff;
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      font-size: 0.95rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      backdrop-filter: blur(4px);
-    }
-    .admin-toggle-btn.unlocked {
-      background: #10b981;
-      border-color: #ffffff;
-    }
-
-    .store-logo {
-      width: 72px;
-      height: 72px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 3px solid #ffffff;
-      margin: 0 auto 10px auto;
-      display: none;
-      background: #fff;
-    }
-
-    .store-badge {
-      display: inline-block;
-      background: rgba(255, 255, 255, 0.2);
-      padding: 3px 10px;
-      border-radius: 20px;
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 0.8px;
-      text-transform: uppercase;
-      margin-bottom: 6px;
-    }
-
-    header h1 {
-      font-size: 1.55rem;
-      font-weight: 800;
-      line-height: 1.2;
-      margin-bottom: 4px;
-    }
-
-    header p {
-      font-size: 0.85rem;
-      opacity: 0.9;
-    }
-
-    .container {
-      max-width: 960px;
-      margin: 0 auto;
-      padding: 16px;
-    }
-
-    /* PANEL DE ADMINISTRADOR (OCULTO POR DEFECTO) */
-    #adminPanel {
-      display: none;
-      background: #0f172a;
-      color: #f8fafc;
-      border-radius: 18px;
-      padding: 20px 16px;
-      margin-bottom: 22px;
-      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.25);
-      border: 2px solid var(--primary);
-    }
-
-    .admin-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 14px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid #1e293b;
-    }
-
-    .admin-header h2 {
-      font-size: 1.05rem;
-      color: #38bdf8;
-    }
-
-    .btn-logout {
-      background: #ef4444;
-      color: #fff;
-      border: none;
-      padding: 5px 10px;
-      border-radius: 8px;
-      font-size: 0.75rem;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .form-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 10px;
-    }
-    @media (min-width: 640px) {
-      .form-grid { grid-template-columns: 1fr 1fr; }
-      .full-col { grid-column: 1 / -1; }
-    }
-
-    .admin-label {
-      display: block;
-      font-size: 0.78rem;
-      color: #94a3b8;
-      margin-bottom: 4px;
-      font-weight: 600;
-    }
-
-    .admin-input, .admin-textarea {
-      width: 100%;
-      background: #1e293b;
-      border: 1px solid #334155;
-      color: #ffffff;
-      padding: 11px 12px;
-      border-radius: 10px;
-      font-size: 0.92rem;
-    }
-    .admin-input:focus, .admin-textarea:focus {
-      outline: none;
-      border-color: #38bdf8;
-    }
-
-    .photo-upload-box {
-      border: 2px dashed #38bdf8;
-      background: rgba(56, 189, 248, 0.08);
-      border-radius: 12px;
-      padding: 14px;
-      text-align: center;
-      cursor: pointer;
-      display: block;
-    }
-
-    #previewImg {
-      max-height: 150px;
-      border-radius: 10px;
-      margin: 10px auto 0 auto;
-      display: none;
-    }
-
-    .btn-save-prod {
-      background: #10b981;
-      color: #ffffff;
-      border: none;
-      width: 100%;
-      padding: 13px;
-      border-radius: 12px;
-      font-size: 0.98rem;
-      font-weight: 800;
-      cursor: pointer;
-      margin-top: 6px;
-    }
-    .btn-save-prod:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-
-    /* BARRA DE BÚSQUEDA Y FILTROS DE CATEGORÍA */
-    .search-box {
-      margin-bottom: 12px;
-    }
-    .search-input {
-      width: 100%;
-      padding: 12px 16px;
-      border-radius: 14px;
-      border: 1px solid var(--border);
-      background: var(--card);
-      font-size: 0.92rem;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-    }
-    .search-input:focus {
-      outline: 2px solid var(--primary);
-      border-color: transparent;
-    }
-
-    .categories-bar {
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      padding: 4px 2px 12px 2px;
-      margin-bottom: 12px;
-      scrollbar-width: none;
-    }
-    .categories-bar::-webkit-scrollbar { display: none; }
-
-    .cat-pill {
-      background: var(--card);
-      color: var(--muted);
-      border: 1px solid var(--border);
-      padding: 8px 16px;
-      border-radius: 50px;
-      font-size: 0.84rem;
-      font-weight: 700;
-      white-space: nowrap;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .cat-pill.active {
-      background: var(--primary);
-      color: #ffffff;
-      border-color: var(--primary);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-    }
-
-    /* CUADRÍCULA DE PRODUCTOS (2 columnas en celular, 3-4 en PC) */
-    .products-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-    }
-    @media (min-width: 640px) {
-      .products-grid { grid-template-columns: repeat(3, 1fr); gap: 18px; }
-    }
-    @media (min-width: 900px) {
-      .products-grid { grid-template-columns: repeat(4, 1fr); }
-    }
-
-    .prod-card {
-      background: var(--card);
-      border-radius: 16px;
-      overflow: hidden;
-      border: 1px solid var(--border);
-      box-shadow: 0 4px 14px rgba(0,0,0,0.04);
-      display: flex;
-      flex-direction: column;
-      position: relative;
-    }
-
-    .prod-img-wrap {
-      position: relative;
-      width: 100%;
-      padding-bottom: 100%;
-      background: #f1f5f9;
-      cursor: pointer;
-      overflow: hidden;
-    }
-
-    .prod-img-wrap img {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      object-fit: cover;
-      transition: transform 0.3s;
-    }
-    .prod-card:hover .prod-img-wrap img {
-      transform: scale(1.04);
-    }
-
-    .prod-cat-tag {
-      position: absolute;
-      top: 8px;
-      left: 8px;
-      background: rgba(15, 23, 42, 0.78);
-      color: #fff;
-      font-size: 0.68rem;
-      font-weight: 700;
-      padding: 3px 8px;
-      border-radius: 6px;
-      backdrop-filter: blur(4px);
-    }
-
-    .btn-del-prod {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      background: #ef4444;
-      color: #fff;
-      border: none;
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      font-size: 0.85rem;
-      font-weight: bold;
-      cursor: pointer;
-      z-index: 10;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-      display: none;
-    }
-
-    .prod-body {
-      padding: 12px;
-      display: flex;
-      flex-direction: column;
-      flex-grow: 1;
-      justify-content: space-between;
-    }
-
-    .prod-title {
-      font-size: 0.94rem;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 4px;
-      line-height: 1.25;
-    }
-
-    .prod-desc {
-      font-size: 0.78rem;
-      color: var(--muted);
-      margin-bottom: 10px;
-      line-height: 1.35;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    .prod-price {
-      font-size: 1.12rem;
-      font-weight: 800;
-      color: var(--primary-dark);
-      margin-bottom: 10px;
-    }
-
-    .btn-order-wa {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      background: #25D366;
-      color: #ffffff;
-      text-decoration: none;
-      padding: 9px 10px;
-      border-radius: 10px;
-      font-size: 0.82rem;
-      font-weight: 700;
-      text-align: center;
-      border: none;
-      cursor: pointer;
-      width: 100%;
-    }
-    .btn-order-wa:active { transform: scale(0.97); }
-
-    /* MODAL DE LOGIN ADMIN Y VISOR DE PRODUCTO */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(15, 23, 42, 0.85);
-      z-index: 9999;
-      justify-content: center;
-      align-items: center;
-      padding: 18px;
-      backdrop-filter: blur(4px);
-    }
-
-    .modal-card {
-      background: #ffffff;
-      color: var(--text);
-      border-radius: 20px;
-      padding: 24px 20px;
-      width: 100%;
-      max-width: 380px;
-      text-align: center;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-      position: relative;
-    }
-
-    .modal-close-x {
-      position: absolute;
-      top: 12px;
-      right: 14px;
-      background: #f1f5f9;
-      border: none;
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      font-size: 1rem;
-      cursor: pointer;
-    }
-
-    #detailImg {
-      width: 100%;
-      max-height: 300px;
-      object-fit: cover;
-      border-radius: 12px;
-      margin-bottom: 12px;
-    }
-
-    .status-msg {
-      text-align: center;
-      padding: 35px 15px;
-      color: var(--muted);
-      font-size: 0.95rem;
-      grid-column: 1 / -1;
-    }
-
-    footer {
-      text-align: center;
-      padding: 24px 12px;
-      font-size: 0.78rem;
-      color: var(--muted);
-    }
-  </style>
-</head>
-<body>
-
-  <!-- ENCABEZADO -->
-  <header id="storeHeader">
-    <button type="button" id="btnAdminLock" class="admin-toggle-btn" title="Acceso Administrador">🔒</button>
-    <img id="storeLogo" class="store-logo" src="" alt="Logo">
-    <div class="store-badge">Catálogo Digital</div>
-    <h1 id="storeName">Cargando tienda...</h1>
-    <p id="storeSubtitle">Explora nuestros productos y pide directo por WhatsApp</p>
-  </header>
-
-  <div class="container">
-
-    <!-- PANEL DE ADMINISTRADOR (SOLO VISIBLE PARA EL DUEÑO) -->
-    <section id="adminPanel">
-      <div class="admin-header">
-        <h2>⚡ Panel de Dueño • Agregar Producto</h2>
-        <button type="button" id="btnLogout" class="btn-logout">Salir</button>
-      </div>
-
-      <form id="formAddProduct" class="form-grid">
-        <div class="full-col">
-          <label for="prodPhoto" class="photo-upload-box">
-            📸 <strong>Toca aquí para tomar foto o elegir de galería</strong><br>
-            <span style="font-size:0.75rem; color:#94a3b8;">Se optimiza automáticamente para cargar rápido</span>
-            <img id="previewImg" src="" alt="Vista previa">
-          </label>
-          <input type="file" id="prodPhoto" accept="image/*" style="display:none;">
-        </div>
-
-        <div>
-          <label class="admin-label">Nombre del producto *</label>
-          <input type="text" id="prodName" class="admin-input" placeholder="Ej. Tenis Deportivos Air" required>
-        </div>
-
-        <div>
-          <label class="admin-label">Precio (MXN) *</label>
-          <input type="number" id="prodPrice" class="admin-input" step="0.01" placeholder="Ej. 450" required>
-        </div>
-
-        <div class="full-col">
-          <label class="admin-label">Categoría *</label>
-          <input type="text" id="prodCategory" list="catSuggestions" class="admin-input" placeholder="Elige o escribe una nueva (Ej. Calzado, Ofertas)" required>
-          <datalist id="catSuggestions"></datalist>
-        </div>
-
-        <div class="full-col">
-          <label class="admin-label">Descripción breve (Tallas, colores, detalles)</label>
-          <textarea id="prodDesc" class="admin-textarea" rows="2" placeholder="Ej. Disponible en tallas 24 a 27. Envío a domicilio."></textarea>
-        </div>
-
-        <div class="full-col">
-          <button type="submit" id="btnSubmitProd" class="btn-save-prod">➕ Publicar en el Catálogo</button>
-          <p id="adminStatus" style="text-align:center; font-size:0.82rem; margin-top:8px; color:#38bdf8;"></p>
-        </div>
-      </form>
-    </section>
-
-    <!-- BUSCADOR Y FILTROS POR CATEGORÍA -->
-    <div class="search-box">
-      <input type="search" id="searchInput" class="search-input" placeholder="🔍 Buscar producto por nombre o descripción...">
-    </div>
-
-    <div class="categories-bar" id="categoriesBar">
-      <button type="button" class="cat-pill active" data-cat="TODOS">Todos</button>
-    </div>
-
-    <!-- CATÁLOGO DE PRODUCTOS -->
-    <div class="products-grid" id="productsGrid">
-      <div class="status-msg">⏳ Cargando catálogo...</div>
-    </div>
-
-  </div>
-
-  <!-- MODAL LOGIN ADMINISTRADOR -->
-  <div id="loginModal" class="modal-overlay">
-    <div class="modal-card">
-      <button type="button" class="modal-close-x" onclick="cerrarModales()">✕</button>
-      <div style="font-size:2rem; margin-bottom:6px;">🔐</div>
-      <h3 style="margin-bottom:4px;">Modo Administrador</h3>
-      <p style="font-size:0.82rem; color:var(--muted); margin-bottom:14px;">Ingresa la clave del negocio para subir o borrar productos.</p>
-      <input type="password" id="adminPassInput" class="search-input" placeholder="Contraseña..." style="text-align:center; margin-bottom:12px;">
-      <button type="button" id="btnVerifyPass" class="btn-save-prod" style="background:var(--primary);">Entrar al Panel</button>
-      <p id="loginError" style="color:#ef4444; font-size:0.8rem; margin-top:8px;"></p>
-    </div>
-  </div>
-
-  <!-- MODAL DETALLE DE PRODUCTO -->
-  <div id="detailModal" class="modal-overlay" onclick="if(event.target===this) cerrarModales()">
-    <div class="modal-card" style="text-align:left;">
-      <button type="button" class="modal-close-x" onclick="cerrarModales()">✕</button>
-      <img id="detailImg" src="" alt="Producto">
-      <span id="detailCat" style="font-size:0.72rem; font-weight:700; color:var(--primary); text-transform:uppercase;"></span>
-      <h3 id="detailTitle" style="font-size:1.25rem; margin:2px 0 6px 0;"></h3>
-      <div id="detailPrice" style="font-size:1.3rem; font-weight:800; color:var(--primary-dark); margin-bottom:8px;"></div>
-      <p id="detailDesc" style="font-size:0.88rem; color:var(--muted); margin-bottom:16px; line-height:1.45;"></p>
-      <a id="detailWaBtn" href="#" target="_blank" class="btn-order-wa" style="padding:12px; font-size:0.95rem;">📲 Pedir por WhatsApp</a>
-    </div>
-  </div>
-
-  <footer>
-    Catálogo impulsado por <strong>KonekShop</strong> • <strong>KONEK Print &amp; Tech</strong> ⚡
-  </footer>
-
-  <script>
+<script>
     // =========================================================================
-    // CONFIGURACIÓN CENTRAL (PEGA AQUÍ TU URL /exec DE APPS SCRIPT)
+    // CONFIGURACIÓN CENTRAL (PEGA AQUÍ TU NUEVA URL /exec DE APPS SCRIPT)
     // =========================================================================
-    const API_URL = "PEGA_AQUI_TU_URL_DE_GOOGLE_APPS_SCRIPT_EXEC";
+    const API_URL = "PEGA_AQUI_TU_NUEVA_URL_DE_GOOGLE_APPS_SCRIPT_EXEC";
 
-    // Leer parámetros de la URL (?tienda=demo-konek & opcional ?admin=1234)
     const urlParams = new URLSearchParams(window.location.search);
     const TIENDA_ID = (urlParams.get("tienda") || "demo-konek").trim().toLowerCase();
     const AUTO_ADMIN_PASS = (urlParams.get("admin") || "").trim();
@@ -564,57 +15,74 @@
     let adminPassword = "";
     let compressedBase64 = "";
 
-    // 1. Llamada JSONP libre de bloqueos CORS / Google Workspace
-    function jsonpRequest(params) {
+    // 1. LECTOR UNIVERSAL POR IFRAME + POSTMESSAGE (Inmune a cuentas de trabajo y multi-sesión)
+    const pendingRequests = {};
+    window.addEventListener("message", function(event) {
+      if (event.data && event.data.reqId && pendingRequests[event.data.reqId]) {
+        const { resolve, timer, iframe } = pendingRequests[event.data.reqId];
+        clearTimeout(timer);
+        delete pendingRequests[event.data.reqId];
+        if (iframe && iframe.parentNode) iframe.parentNode.removeChild(iframe);
+        resolve(event.data.data);
+      }
+    });
+
+    function universalGetRequest(params) {
       return new Promise((resolve, reject) => {
-        const cbName = "konek_cb_" + Date.now() + "_" + Math.floor(Math.random() * 10000);
-        params.callback = cbName;
+        const reqId = "req_" + Date.now() + "_" + Math.floor(Math.random() * 100000);
+        params.reqId = reqId;
+        const cleanBase = API_URL.trim().replace(/\/+$/, "");
+        const sep = cleanBase.includes("?") ? "&" : "?";
         const query = Object.keys(params)
           .map(k => encodeURIComponent(k) + "=" + encodeURIComponent(params[k]))
           .join("&");
 
-        const script = document.createElement("script");
-        script.src = API_URL + (API_URL.includes("?") ? "&" : "?") + query;
+        const iframe = document.createElement("iframe");
+        iframe.style.display = "none";
+        iframe.src = cleanBase + sep + query;
 
-        const timeout = setTimeout(() => {
-          delete window[cbName];
-          script.remove();
-          reject(new Error("Tiempo de espera agotado"));
+        const timer = setTimeout(() => {
+          delete pendingRequests[reqId];
+          if (iframe && iframe.parentNode) iframe.parentNode.removeChild(iframe);
+          reject(new Error("Tiempo de espera agotado al conectar con Google"));
         }, 15000);
 
-        window[cbName] = function(data) {
-          clearTimeout(timeout);
-          delete window[cbName];
-          script.remove();
-          resolve(data);
-        };
-
-        script.onerror = function() {
-          clearTimeout(timeout);
-          delete window[cbName];
-          script.remove();
-          reject(new Error("Error de conexión con el servidor"));
-        };
-
-        document.body.appendChild(script);
+        pendingRequests[reqId] = { resolve, reject, timer, iframe };
+        document.body.appendChild(iframe);
       });
     }
 
-    // 2. Cargar Tienda y Catálogo al abrir
+    // 2. ESCRITURA UNIVERSAL POR FORMULARIO URLENCODED + NO-CORS (Inmune a Workspace)
+    function universalPostRequest(payloadObj) {
+      const formBody = new URLSearchParams();
+      Object.keys(payloadObj).forEach(k => {
+        if (payloadObj[k] !== undefined && payloadObj[k] !== null) {
+          formBody.append(k, payloadObj[k]);
+        }
+      });
+
+      return fetch(API_URL.trim(), {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: formBody.toString()
+      });
+    }
+
+    // 3. Cargar Tienda y Catálogo al abrir
     async function loadCatalog() {
       const grid = document.getElementById("productsGrid");
       try {
-        const res = await jsonpRequest({ action: "getCatalog", tienda: TIENDA_ID });
-        if (!res.success) {
+        const res = await universalGetRequest({ action: "getCatalog", tienda: TIENDA_ID });
+        if (!res || !res.success) {
           document.getElementById("storeName").innerText = "Tienda no disponible";
-          grid.innerHTML = `<div class="status-msg">⚠️ ${res.error || "No se encontró el catálogo."}</div>`;
+          grid.innerHTML = `<div class="status-msg">⚠️ ${(res && res.error) ? res.error : "No se encontró el catálogo."}</div>`;
           return;
         }
 
         storeData = res.tienda;
         allProducts = res.productos || [];
 
-        // Aplicar identidad visual del cliente
         document.title = storeData.nombre + " • KonekShop";
         document.getElementById("storeName").innerText = storeData.nombre;
         document.documentElement.style.setProperty("--primary", storeData.color);
@@ -629,7 +97,6 @@
         buildCategories();
         renderProducts();
 
-        // Verificar si ya tenía sesión iniciada en este celular o venía ?admin= en URL
         const savedPass = sessionStorage.getItem("konekshop_pass_" + TIENDA_ID) || AUTO_ADMIN_PASS;
         if (savedPass && !isAdmin) {
           verifyAdminSilently(savedPass);
@@ -640,7 +107,6 @@
       }
     }
 
-    // 3. Generar pestañas de categorías dinámicas
     function buildCategories() {
       const bar = document.getElementById("categoriesBar");
       const datalist = document.getElementById("catSuggestions");
@@ -668,7 +134,6 @@
       renderProducts();
     }
 
-    // 4. Dibujar tarjetas de productos
     function renderProducts() {
       const grid = document.getElementById("productsGrid");
       const search = document.getElementById("searchInput").value.trim().toLowerCase();
@@ -717,7 +182,6 @@
       }).join("");
     }
 
-    // 5. Visor ampliado del producto
     function openDetail(prodId) {
       const p = allProducts.find(item => String(item.id) === String(prodId));
       if (!p) return;
@@ -742,10 +206,9 @@
       document.getElementById("detailModal").style.display = "none";
     }
 
-    // 6. Autenticación del Dueño (Administrador)
     async function verifyAdminSilently(pass) {
-      const res = await jsonpRequest({ action: "checkAdmin", tienda: TIENDA_ID, pass: pass });
-      if (res.success) {
+      const res = await universalGetRequest({ action: "checkAdmin", tienda: TIENDA_ID, pass: pass });
+      if (res && res.success) {
         activateAdminMode(pass);
       }
     }
@@ -781,8 +244,8 @@
 
       errEl.style.color = "#0ea5e9";
       errEl.innerText = "Verificando...";
-      const res = await jsonpRequest({ action: "checkAdmin", tienda: TIENDA_ID, pass: pass });
-      if (res.success) {
+      const res = await universalGetRequest({ action: "checkAdmin", tienda: TIENDA_ID, pass: pass });
+      if (res && res.success) {
         activateAdminMode(pass);
       } else {
         errEl.style.color = "#ef4444";
@@ -801,7 +264,6 @@
       renderProducts();
     });
 
-    // 7. Compresión automática de imagen desde cámara/galería del celular
     document.getElementById("prodPhoto").addEventListener("change", function(e) {
       const file = e.target.files[0];
       if (!file) return;
@@ -830,7 +292,6 @@
       reader.readAsDataURL(file);
     });
 
-    // 8. Publicar producto nuevo en Google Sheets y Drive
     document.getElementById("formAddProduct").addEventListener("submit", async function(e) {
       e.preventDefault();
       const btn = document.getElementById("btnSubmitProd");
@@ -852,24 +313,16 @@
       status.innerText = "⏳ Subiendo producto al catálogo...";
 
       try {
-        const response = await fetch(API_URL, {
-          method: "POST",
-          body: JSON.stringify(payload)
-        });
-        const res = await response.json();
-
-        if (res.success) {
-          status.style.color = "#4ade80";
-          status.innerText = "✅ ¡Producto publicado!";
-          document.getElementById("formAddProduct").reset();
-          document.getElementById("previewImg").style.display = "none";
-          compressedBase64 = "";
-          await loadCatalog();
-          setTimeout(() => { status.innerText = ""; }, 3000);
-        } else {
-          status.style.color = "#ef4444";
-          status.innerText = "❌ Error: " + (res.error || "No se pudo guardar");
-        }
+        await universalPostRequest(payload);
+        // Esperar 2.5 segundos a que Google Drive guarde la foto y recargar catálogo
+        await new Promise(r => setTimeout(r, 2500));
+        status.style.color = "#4ade80";
+        status.innerText = "✅ ¡Producto publicado!";
+        document.getElementById("formAddProduct").reset();
+        document.getElementById("previewImg").style.display = "none";
+        compressedBase64 = "";
+        await loadCatalog();
+        setTimeout(() => { status.innerText = ""; }, 3000);
       } catch (err) {
         status.style.color = "#ef4444";
         status.innerText = "❌ Error de red: " + err.message;
@@ -878,26 +331,18 @@
       }
     });
 
-    // 9. Eliminar producto (y liberar su espacio en Google Drive)
     async function deleteProduct(productId, productName) {
       if (!confirm(`¿Seguro que deseas eliminar "${productName}" del catálogo?`)) return;
 
       try {
-        const response = await fetch(API_URL, {
-          method: "POST",
-          body: JSON.stringify({
-            action: "deleteProduct",
-            tienda: TIENDA_ID,
-            pass: adminPassword,
-            productId: productId
-          })
+        await universalPostRequest({
+          action: "deleteProduct",
+          tienda: TIENDA_ID,
+          pass: adminPassword,
+          productId: productId
         });
-        const res = await response.json();
-        if (res.success) {
-          await loadCatalog();
-        } else {
-          alert("No se pudo eliminar: " + res.error);
-        }
+        await new Promise(r => setTimeout(r, 1500));
+        await loadCatalog();
       } catch (err) {
         alert("Error de conexión al eliminar.");
       }
