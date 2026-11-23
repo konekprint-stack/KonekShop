@@ -464,37 +464,48 @@
     }
 
     function compressImageFile(file, maxDim, format, quality, callback) {
-      const reader = new FileReader();
-      reader.onload = ev => {
-        const img = new Image();
-        img.onload = () => {
-          const canvas = document.createElement("canvas");
-          let w = img.width, h = img.height;
-          if (w > h && w > maxDim) { h = Math.round((h * maxDim) / w); w = maxDim; }
-          else if (h > maxDim) { w = Math.round((w * maxDim) / h); h = maxDim; }
-          canvas.width = w; canvas.height = h;
-          canvas.getContext("2d").drawImage(img, 0, 0, w, h);
-          callback(canvas.toDataURL(format, quality));
-        };
-        img.src = ev.target.result;
+      const objectUrl = URL.createObjectURL(file);
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        let w = img.width, h = img.height;
+        if (w > h && w > maxDim) { h = Math.round((h * maxDim) / w); w = maxDim; }
+        else if (h > maxDim) { w = Math.round((w * maxDim) / h); h = maxDim; }
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext("2d");
+        // Fondo blanco por si la imagen de galería es PNG con transparencia
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, w, h);
+        ctx.drawImage(img, 0, 0, w, h);
+        URL.revokeObjectURL(objectUrl);
+        callback(canvas.toDataURL(format, quality));
       };
-      reader.readAsDataURL(file);
+      img.onerror = () => {
+        URL.revokeObjectURL(objectUrl);
+        alert("No se pudo procesar este formato de imagen. Intenta con JPG o PNG.");
+      };
+      img.src = objectUrl;
     }
 
-    document.getElementById("prodCamera").addEventListener("change", e => {
-      if (e.target.files[0]) compressImageFile(e.target.files[0], 850, "image/jpeg", 0.80, b64 => {
-        compressedBase64 = b64;
-        const prev = document.getElementById("previewImg"); prev.src = b64; prev.style.display = "block";
-      });
-    });
-    document.getElementById("logoFileInput").addEventListener("change", e => {
-      if (e.target.files[0]) compressImageFile(e.target.files[0], 360, "image/png", 0.90, b64 => {
-        compressedLogoBase64 = b64;
-        const prev = document.getElementById("previewLogo"); prev.src = b64; prev.style.display = "block";
-        const headLogo = document.getElementById("storeLogo"); headLogo.src = b64; headLogo.style.display = "block";
-      });
-    });
+    function handleProductImageSelect(e) {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      const helper = document.getElementById("photoHelperText");
+      if (helper) { helper.style.color = "#38bdf8"; helper.innerText = "⏳ Procesando imagen..."; }
 
+      compressImageFile(file, 850, "image/jpeg", 0.80, b64 => {
+        compressedBase64 = b64;
+        const prev = document.getElementById("previewImg");
+        prev.src = b64;
+        prev.style.display = "block";
+        if (helper) { helper.style.color = "#4ade80"; helper.innerText = "✅ Foto lista para publicar"; }
+      });
+      e.target.value = ""; // Permite volver a seleccionar el mismo archivo si hace falta
+    }
+
+    document.getElementById("prodPhoto").addEventListener("change", handleProductImageSelect);
+    document.getElementById("prodCamera").addEventListener("change", handleProductImageSelect);
     document.querySelectorAll(".swatch-dot").forEach(dot => dot.addEventListener("click", () => {
       const c = dot.getAttribute("data-color"); document.getElementById("designPrimaryColor").value = c; applyHarmoniousPalette(c);
     }));
