@@ -421,7 +421,7 @@
   </footer>
 
   <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbw7dEGWnA3iMLThZ8KamPwfnJc__Mtab1NZWq3hlo5VtTdaCfSZr6yuYKEk4T7I4PI6vw/exec";";
+const API_URL = "https://script.google.com/macros/s/AKfycbw7dEGWnA3iMLThZ8KamPwfnJc__Mtab1NZWq3hlo5VtTdaCfSZr6yuYKEk4T7I4PI6vw/exec";
 
     const urlParams = new URLSearchParams(window.location.search);
     const TIENDA_ID = (urlParams.get("tienda") || "demo-konek").trim().toLowerCase();
@@ -434,17 +434,46 @@
     let adminPassword = "";
     let compressedBase64 = "";
 
-    const pendingRequests = {};
-    window.addEventListener("message", function(event) {
-      if (event.data && event.data.reqId && pendingRequests[event.data.reqId]) {
-        const { resolve, timer, iframe } = pendingRequests[event.data.reqId];
-        clearTimeout(timer);
-        delete pendingRequests[event.data.reqId];
-        if (iframe && iframe.parentNode) iframe.parentNode.removeChild(iframe);
-        resolve(event.data.data);
-      }
-    });
+    // LECTOR UNIVERSAL JSONP (El mismo método probado de KonekParty: sin iframe y sin crossOrigin)
+    function universalGetRequest(params) {
+      return new Promise((resolve, reject) => {
+        const cbName = "konekshop_cb_" + Date.now() + "_" + Math.floor(Math.random() * 100000);
+        const script = document.createElement("script");
+        script.referrerPolicy = "no-referrer";
 
+        const cleanBase = API_URL.trim().replace(/\/+$/, "");
+        const sep = cleanBase.includes("?") ? "&" : "?";
+        params.callback = cbName;
+        params._nocache = Date.now();
+
+        const query = Object.keys(params)
+          .map(k => encodeURIComponent(k) + "=" + encodeURIComponent(params[k]))
+          .join("&");
+
+        const timer = setTimeout(() => {
+          delete window[cbName];
+          if (script.parentNode) script.parentNode.removeChild(script);
+          reject(new Error("Tiempo de espera agotado al conectar con Google"));
+        }, 15000);
+
+        window[cbName] = function(data) {
+          clearTimeout(timer);
+          delete window[cbName];
+          if (script.parentNode) script.parentNode.removeChild(script);
+          resolve(data);
+        };
+
+        script.onerror = function() {
+          clearTimeout(timer);
+          delete window[cbName];
+          if (script.parentNode) script.parentNode.removeChild(script);
+          reject(new Error("No se pudo conectar con Google Apps Script"));
+        };
+
+        script.src = cleanBase + sep + query;
+        document.head.appendChild(script);
+      });
+    }
     function universalGetRequest(params) {
       return new Promise((resolve, reject) => {
         const reqId = "req_" + Date.now() + "_" + Math.floor(Math.random() * 100000);
