@@ -44,8 +44,8 @@
     @media (min-width: 640px) { .form-grid { grid-template-columns: 1fr 1fr; } .full-col { grid-column: 1 / -1; } }
     .admin-label { display: block; font-size: 0.78rem; color: #94a3b8; margin-bottom: 4px; font-weight: 600; }
     .admin-input, .admin-textarea, .admin-select { width: 100%; background: #1e293b; border: 1px solid #334155; color: #fff; padding: 10px 12px; border-radius: 10px; font-size: 0.9rem; }
-    .photo-upload-box { border: 2px dashed #38bdf8; background: rgba(56,189,248,0.08); border-radius: 12px; padding: 14px; text-align: center; cursor: pointer; display: block; }
-    #previewImg { max-height: 150px; border-radius: 10px; margin: 10px auto 0; display: none; }
+    .photo-upload-box { border: 2px dashed #38bdf8; background: rgba(56,189,248,0.08); border-radius: 12px; padding: 14px; text-align: center; display: block; }
+    #previewImg { max-height: 160px; border-radius: 10px; margin: 10px auto 0; display: none; border: 2px solid #38bdf8; }
     #previewLogo { width: 76px; height: 76px; border-radius: 50%; object-fit: cover; margin: 10px auto 0; display: none; border: 2px solid #fff; }
     .palette-swatches { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 4px; }
     .swatch-dot { width: 28px; height: 28px; border-radius: 50%; border: 2px solid #fff; cursor: pointer; }
@@ -104,21 +104,19 @@
 
       <form id="formAddProduct" class="form-grid">
         <div class="full-col">
-          <div class="photo-upload-box" style="cursor: default;">
+          <div class="photo-upload-box">
             <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
-              <!-- Botón 1: Cámara directa -->
-              <label for="prodCamera" style="flex: 1; min-width: 135px; background: #0284c7; color: #fff; padding: 11px 12px; border-radius: 10px; font-weight: 700; font-size: 0.88rem; cursor: pointer;">
+              <label for="prodCamera" style="flex: 1; min-width: 130px; background: #0284c7; color: #fff; padding: 11px 12px; border-radius: 10px; font-weight: 700; font-size: 0.88rem; cursor: pointer;">
                 📸 Tomar Foto
               </label>
               <input type="file" id="prodCamera" accept="image/*" capture="environment" style="display:none;">
 
-              <!-- Botón 2: Galería / Archivos de PC o Celular -->
-              <label for="prodPhoto" style="flex: 1; min-width: 135px; background: #1e293b; border: 1px solid #475569; color: #fff; padding: 11px 12px; border-radius: 10px; font-weight: 700; font-size: 0.88rem; cursor: pointer;">
+              <label for="prodPhoto" style="flex: 1; min-width: 130px; background: #1e293b; border: 1px solid #475569; color: #fff; padding: 11px 12px; border-radius: 10px; font-weight: 700; font-size: 0.88rem; cursor: pointer;">
                 🖼️ Galería
               </label>
-              <input type="file" id="prodPhoto" accept="image/jpeg,image/png,image/webp,image/*" style="display:none;">
+              <input type="file" id="prodPhoto" accept="image/*" style="display:none;">
             </div>
-            <span id="photoHelperText" style="display:block; font-size:0.75rem; color:#94a3b8; margin-top:8px;">Se optimiza automáticamente para cargar rápido</span>
+            <span id="photoHelperText" style="display:block; font-size:0.75rem; color:#94a3b8; margin-top:8px;">Toma una foto o elige de tu galería</span>
             <img id="previewImg" src="" alt="Vista previa">
           </div>
         </div>
@@ -132,7 +130,7 @@
         </div>
         <div class="full-col">
           <label class="admin-label">Categoría *</label>
-          <input type="text" id="prodCategory" list="catSuggestions" class="admin-input" placeholder="Elige o escribe una nueva (Ej. Calzado, Ofertas)" required>
+          <input type="text" id="prodCategory" list="catSuggestions" class="admin-input" placeholder="Elige o escribe una nueva" required>
           <datalist id="catSuggestions"></datalist>
         </div>
         <div class="full-col">
@@ -148,7 +146,7 @@
 
       <form id="formDesignStore" class="form-grid" style="display:none;">
         <div class="full-col">
-          <label for="logoFileInput" class="photo-upload-box" style="border-color:#10b981; background:rgba(16,185,129,0.08);">
+          <label for="logoFileInput" class="photo-upload-box" style="border-color:#10b981; background:rgba(16,185,129,0.08); cursor:pointer;">
             🏷️ <strong>Subir o Cambiar Logo del Negocio</strong>
             <img id="previewLogo" src="" alt="Logo">
           </label>
@@ -238,7 +236,7 @@
   <footer>Catálogo impulsado por <strong>KonekShop</strong> • <strong>KONEK Print &amp; Tech</strong> ⚡</footer>
 
   <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbwe1jOX0jkutPUU4AUR5VleD-aJ_ZHdFYgDzcP8kzNQHlgj5WMmvLE4vpbI3OcUEmLSSQ/exec";
+    const API_URL = "https://script.google.com/macros/s/AKfycbw7dEGWnA3iMLThZ8KamPwfnJc__Mtab1NZWq3hlo5VtTdaCfSZr6yuYKEk4T7I4PI6vw/exec";
     const urlParams = new URLSearchParams(window.location.search);
     const TIENDA_ID = (urlParams.get("tienda") || "demo-konek").trim().toLowerCase();
     const AUTO_ADMIN_PASS = (urlParams.get("admin") || "").trim();
@@ -291,7 +289,6 @@
       });
     }
 
-// Envío limpio en JSON plano (evita que URLSearchParams trunque el Base64 de galería)
     function universalPostRequest(payloadObj) {
       return fetch(API_URL.trim(), {
         method: "POST",
@@ -301,53 +298,6 @@
       });
     }
 
-    function compressImageFile(file, maxDim, format, quality, callback) {
-      const reader = new FileReader();
-      reader.onload = ev => {
-        const img = new Image();
-        img.onload = () => {
-          const canvas = document.createElement("canvas");
-          let w = img.width, h = img.height;
-          if (w > h && w > maxDim) { h = Math.round((h * maxDim) / w); w = maxDim; }
-          else if (h > maxDim) { w = Math.round((w * maxDim) / h); h = maxDim; }
-          canvas.width = w;
-          canvas.height = h;
-          const ctx = canvas.getContext("2d");
-          ctx.fillStyle = "#ffffff";
-          ctx.fillRect(0, 0, w, h);
-          ctx.drawImage(img, 0, 0, w, h);
-          callback(canvas.toDataURL(format, quality));
-        };
-        img.onerror = () => alert("No se pudo leer esta imagen. Intenta con JPG o PNG.");
-        img.src = ev.target.result;
-      };
-      reader.onerror = () => alert("Error al abrir el archivo de galería.");
-      reader.readAsDataURL(file);
-    }
-
-    function handleProductImageSelect(e) {
-      const file = e.target.files && e.target.files[0];
-      if (!file) return;
-
-      const btn = document.getElementById("btnSubmitProd");
-      const status = document.getElementById("adminStatus");
-      btn.disabled = true;
-      status.style.color = "#38bdf8";
-      status.innerText = "⏳ Optimizando foto de galería...";
-
-      compressImageFile(file, 650, "image/jpeg", 0.72, b64 => {
-        compressedBase64 = b64;
-        const prev = document.getElementById("previewImg");
-        prev.src = b64;
-        prev.style.display = "block";
-        btn.disabled = false;
-        status.style.color = "#4ade80";
-        status.innerText = "✅ Foto lista (" + Math.round(b64.length / 1024) + " KB). Ya puedes publicar.";
-      });
-    }
-
-    document.getElementById("prodPhoto").addEventListener("change", handleProductImageSelect);
-    document.getElementById("prodCamera").addEventListener("change", handleProductImageSelect);
     async function loadCatalog() {
       const grid = document.getElementById("productsGrid");
       try {
@@ -508,6 +458,8 @@
       editingProductId = null;
       document.getElementById("formAddProduct").reset();
       document.getElementById("previewImg").style.display = "none";
+      document.getElementById("photoHelperText").style.color = "#94a3b8";
+      document.getElementById("photoHelperText").innerText = "Toma una foto o elige de tu galería";
       compressedBase64 = "";
       const submitBtn = document.getElementById("btnSubmitProd");
       submitBtn.innerText = "➕ Publicar en el Catálogo"; submitBtn.style.background = "#10b981";
@@ -515,48 +467,65 @@
     }
 
     function compressImageFile(file, maxDim, format, quality, callback) {
-      const objectUrl = URL.createObjectURL(file);
-      const img = new Image();
-      img.onload = () => {
-        const canvas = document.createElement("canvas");
-        let w = img.width, h = img.height;
-        if (w > h && w > maxDim) { h = Math.round((h * maxDim) / w); w = maxDim; }
-        else if (h > maxDim) { w = Math.round((w * maxDim) / h); h = maxDim; }
-        canvas.width = w;
-        canvas.height = h;
-        const ctx = canvas.getContext("2d");
-        // Fondo blanco por si la imagen de galería es PNG con transparencia
-        ctx.fillStyle = "#ffffff";
-        ctx.fillRect(0, 0, w, h);
-        ctx.drawImage(img, 0, 0, w, h);
-        URL.revokeObjectURL(objectUrl);
-        callback(canvas.toDataURL(format, quality));
+      const reader = new FileReader();
+      reader.onload = ev => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          let w = img.width, h = img.height;
+          if (w > h && w > maxDim) { h = Math.round((h * maxDim) / w); w = maxDim; }
+          else if (h > maxDim) { w = Math.round((w * maxDim) / h); h = maxDim; }
+          canvas.width = w; canvas.height = h;
+          const ctx = canvas.getContext("2d");
+          ctx.fillStyle = "#ffffff";
+          ctx.fillRect(0, 0, w, h);
+          ctx.drawImage(img, 0, 0, w, h);
+          callback(canvas.toDataURL(format, quality));
+        };
+        img.onerror = () => {
+          alert("Formato no compatible. Selecciona una foto JPG o PNG.");
+          document.getElementById("btnSubmitProd").disabled = false;
+        };
+        img.src = ev.target.result;
       };
-      img.onerror = () => {
-        URL.revokeObjectURL(objectUrl);
-        alert("No se pudo procesar este formato de imagen. Intenta con JPG o PNG.");
+      reader.onerror = () => {
+        alert("No se pudo leer el archivo seleccionado.");
+        document.getElementById("btnSubmitProd").disabled = false;
       };
-      img.src = objectUrl;
+      reader.readAsDataURL(file);
     }
 
     function handleProductImageSelect(e) {
       const file = e.target.files && e.target.files[0];
       if (!file) return;
+      const btn = document.getElementById("btnSubmitProd");
       const helper = document.getElementById("photoHelperText");
-      if (helper) { helper.style.color = "#38bdf8"; helper.innerText = "⏳ Procesando imagen..."; }
+      btn.disabled = true;
+      helper.style.color = "#38bdf8";
+      helper.innerText = "⏳ Procesando imagen...";
 
-      compressImageFile(file, 850, "image/jpeg", 0.80, b64 => {
+      compressImageFile(file, 650, "image/jpeg", 0.72, b64 => {
         compressedBase64 = b64;
         const prev = document.getElementById("previewImg");
         prev.src = b64;
         prev.style.display = "block";
-        if (helper) { helper.style.color = "#4ade80"; helper.innerText = "✅ Foto lista para publicar"; }
+        btn.disabled = false;
+        helper.style.color = "#4ade80";
+        helper.innerText = "✅ Foto lista (" + Math.round(b64.length / 1024) + " KB)";
       });
-      e.target.value = ""; // Permite volver a seleccionar el mismo archivo si hace falta
     }
 
     document.getElementById("prodPhoto").addEventListener("change", handleProductImageSelect);
     document.getElementById("prodCamera").addEventListener("change", handleProductImageSelect);
+
+    document.getElementById("logoFileInput").addEventListener("change", e => {
+      if (e.target.files[0]) compressImageFile(e.target.files[0], 360, "image/png", 0.85, b64 => {
+        compressedLogoBase64 = b64;
+        const prev = document.getElementById("previewLogo"); prev.src = b64; prev.style.display = "block";
+        const headLogo = document.getElementById("storeLogo"); headLogo.src = b64; headLogo.style.display = "block";
+      });
+    });
+
     document.querySelectorAll(".swatch-dot").forEach(dot => dot.addEventListener("click", () => {
       const c = dot.getAttribute("data-color"); document.getElementById("designPrimaryColor").value = c; applyHarmoniousPalette(c);
     }));
