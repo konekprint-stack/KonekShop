@@ -227,7 +227,7 @@
   <footer>Catálogo impulsado por <strong>KonekShop</strong> • <strong>KONEK Print &amp; Tech</strong> ⚡</footer>
 
   <script>
-    const API_URL = "https://script.google.com/macros/library/d/1P11zhoEJ5A1X2EXKEhW0VJJYBnnoo5QB8HleWVb5vby-3JbBxOo80SJg/8";
+    const API_URL = "https://script.google.com/macros/s/AKfycbwe1jOX0jkutPUU4AUR5VleD-aJ_ZHdFYgDzcP8kzNQHlgj5WMmvLE4vpbI3OcUEmLSSQ/exec";
     const urlParams = new URLSearchParams(window.location.search);
     const TIENDA_ID = (urlParams.get("tienda") || "demo-konek").trim().toLowerCase();
     const AUTO_ADMIN_PASS = (urlParams.get("admin") || "").trim();
@@ -266,7 +266,6 @@
       return new Promise((resolve, reject) => {
         const cbName = "konekshop_cb_" + Date.now() + "_" + Math.floor(Math.random() * 100000);
         const script = document.createElement("script");
-        script.crossOrigin = "anonymous";
         script.referrerPolicy = "no-referrer";
         const cleanBase = API_URL.trim().replace(/\/+$/, "");
         params.callback = cbName;
