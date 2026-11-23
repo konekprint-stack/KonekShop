@@ -291,12 +291,63 @@
       });
     }
 
+// Envío limpio en JSON plano (evita que URLSearchParams trunque el Base64 de galería)
     function universalPostRequest(payloadObj) {
-      const formBody = new URLSearchParams();
-      Object.keys(payloadObj).forEach(k => { if (payloadObj[k] !== undefined && payloadObj[k] !== null) formBody.append(k, payloadObj[k]); });
-      return fetch(API_URL.trim(), { method: "POST", mode: "no-cors", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: formBody.toString() });
+      return fetch(API_URL.trim(), {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(payloadObj)
+      });
     }
 
+    function compressImageFile(file, maxDim, format, quality, callback) {
+      const reader = new FileReader();
+      reader.onload = ev => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          let w = img.width, h = img.height;
+          if (w > h && w > maxDim) { h = Math.round((h * maxDim) / w); w = maxDim; }
+          else if (h > maxDim) { w = Math.round((w * maxDim) / h); h = maxDim; }
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext("2d");
+          ctx.fillStyle = "#ffffff";
+          ctx.fillRect(0, 0, w, h);
+          ctx.drawImage(img, 0, 0, w, h);
+          callback(canvas.toDataURL(format, quality));
+        };
+        img.onerror = () => alert("No se pudo leer esta imagen. Intenta con JPG o PNG.");
+        img.src = ev.target.result;
+      };
+      reader.onerror = () => alert("Error al abrir el archivo de galería.");
+      reader.readAsDataURL(file);
+    }
+
+    function handleProductImageSelect(e) {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+
+      const btn = document.getElementById("btnSubmitProd");
+      const status = document.getElementById("adminStatus");
+      btn.disabled = true;
+      status.style.color = "#38bdf8";
+      status.innerText = "⏳ Optimizando foto de galería...";
+
+      compressImageFile(file, 650, "image/jpeg", 0.72, b64 => {
+        compressedBase64 = b64;
+        const prev = document.getElementById("previewImg");
+        prev.src = b64;
+        prev.style.display = "block";
+        btn.disabled = false;
+        status.style.color = "#4ade80";
+        status.innerText = "✅ Foto lista (" + Math.round(b64.length / 1024) + " KB). Ya puedes publicar.";
+      });
+    }
+
+    document.getElementById("prodPhoto").addEventListener("change", handleProductImageSelect);
+    document.getElementById("prodCamera").addEventListener("change", handleProductImageSelect);
     async function loadCatalog() {
       const grid = document.getElementById("productsGrid");
       try {
