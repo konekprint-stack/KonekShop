@@ -104,12 +104,23 @@
 
       <form id="formAddProduct" class="form-grid">
         <div class="full-col">
-          <label for="prodPhoto" class="photo-upload-box">
-            📸 <strong>Toca aquí para tomar foto o elegir de galería</strong><br>
-            <span style="font-size:0.75rem; color:#94a3b8;">Se optimiza automáticamente para cargar rápido</span>
+          <div class="photo-upload-box" style="cursor: default;">
+            <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
+              <!-- Botón 1: Cámara directa del celular -->
+              <label for="prodCamera" style="flex: 1; min-width: 135px; background: #0284c7; color: #fff; padding: 11px 12px; border-radius: 10px; font-weight: 700; font-size: 0.88rem; cursor: pointer;">
+                📸 Tomar Foto
+              </label>
+              <input type="file" id="prodCamera" accept="image/*" capture="environment" style="display:none;">
+
+              <!-- Botón 2: Galería / Archivos -->
+              <label for="prodPhoto" style="flex: 1; min-width: 135px; background: #1e293b; border: 1px solid #475569; color: #fff; padding: 11px 12px; border-radius: 10px; font-weight: 700; font-size: 0.88rem; cursor: pointer;">
+                🖼️ Galería
+              </label>
+              <input type="file" id="prodPhoto" accept="image/*" style="display:none;">
+            </div>
+            <span style="display:block; font-size:0.75rem; color:#94a3b8; margin-top:8px;">Se optimiza automáticamente para cargar rápido</span>
             <img id="previewImg" src="" alt="Vista previa">
-          </label>
-          <input type="file" id="prodPhoto" accept="image/*" style="display:none;">
+          </div>
         </div>
         <div>
           <label class="admin-label">Nombre del producto *</label>
@@ -470,13 +481,12 @@
       reader.readAsDataURL(file);
     }
 
-    document.getElementById("prodPhoto").addEventListener("change", e => {
+    document.getElementById("prodCamera").addEventListener("change", e => {
       if (e.target.files[0]) compressImageFile(e.target.files[0], 850, "image/jpeg", 0.80, b64 => {
         compressedBase64 = b64;
         const prev = document.getElementById("previewImg"); prev.src = b64; prev.style.display = "block";
       });
     });
-
     document.getElementById("logoFileInput").addEventListener("change", e => {
       if (e.target.files[0]) compressImageFile(e.target.files[0], 360, "image/png", 0.90, b64 => {
         compressedLogoBase64 = b64;
