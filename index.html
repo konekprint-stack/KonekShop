@@ -266,6 +266,7 @@
       return new Promise((resolve, reject) => {
         const cbName = "konekshop_cb_" + Date.now() + "_" + Math.floor(Math.random() * 100000);
         const script = document.createElement("script");
+        script.crossOrigin = "anonymous";
         script.referrerPolicy = "no-referrer";
         const cleanBase = API_URL.trim().replace(/\/+$/, "");
         params.callback = cbName;
